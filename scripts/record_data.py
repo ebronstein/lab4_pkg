@@ -12,14 +12,12 @@ import rospy
 from lab4_pkg.msg import SoftGripperState, SoftGripperCmd
 
 class DataRecorder():
-    def __init__(self, run_name):
+    def __init__(self):
         """
         Records data for the soft finger
 
         Parameters
         ----------
-        run_name : string
-            name of file to save to.  should include .csv at the end
         """
         self.cmd_pub = rospy.Publisher('soft_gripper_cmd', SoftGripperCmd, queue_size=10)
         rospy.sleep(1)
@@ -29,7 +27,6 @@ class DataRecorder():
         self.states = []
         self.rate = rospy.Rate(100)
         self.start_time = None
-        self.run_name = run_name
 
     def state_listener(self, msg):
         """
@@ -50,7 +47,7 @@ class DataRecorder():
             msg.tip_pos.x, msg.tip_pos.y
         ])
 
-    def flush(self):
+    def flush(self, run_name):
         """
         writes states to file
         """
@@ -65,27 +62,31 @@ class DataRecorder():
                 'tip_pos_x', 'tip_pos_y'
             ]
         )
-        filename = os.path.join(os.path.dirname(os.path.realpath('__file__')), 'data', self.run_name)
+        filename = os.path.join(os.path.dirname(os.path.realpath('__file__')), 'data', run_name)
+        print 'Writing CSV to {0}'.format(filename)
         df.to_csv(filename)
+        self.states = [] # flush states
+        self.start_time = None
 
     def record_data(self):
         """
         Script to command soft finger.  You can send commands to both fingers, but only the right is attached.
         """
-        self.cmd_pub.publish(SoftGripperCmd(150,150))
-        rospy.sleep(3)
-        self.cmd_pub.publish(SoftGripperCmd(0,0))
-        rospy.sleep(3)
-        self.shutdown()
+        for cmd in np.linspace(5, 150, 10):
+            self.cmd_pub.publish(SoftGripperCmd(cmd,cmd))
+            rospy.sleep(6)
+            self.cmd_pub.publish(SoftGripperCmd(0,0))
+            rospy.sleep(3)
+            self.shutdown('{0}.csv'.format(cmd))
 
-    def shutdown(self):
+    def shutdown(self, filename):
         """
         Stops the finger and flushes whenever you exit
         """
         self.cmd_pub.publish(SoftGripperCmd(0,0))
-        self.flush()
+        self.flush(filename)
 
 if __name__ == '__main__':
     rospy.init_node('data_recorder')
-    dr = DataRecorder('tmp.csv')
+    dr = DataRecorder()
     dr.record_data()

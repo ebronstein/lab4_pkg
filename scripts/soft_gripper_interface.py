@@ -194,7 +194,8 @@ class SoftGripperInterface():
             try:
                 if i % 20 == 0:
                     self.update_homography()
-                time, left_pwm, right_pwm, left_pressure, right_pressure, left_flex, right_flex = read_serial.split(',')
+                time, left_pwm, right_pwm, left_pressure, right_pressure, left_flex, right_flex = read_serial.replace('\r\n', '').split(',')
+                print 'SPLIT CORRECTLY.'
                 self.compute_finger_pos()
                 state = SoftGripperState(
                     float(time),
