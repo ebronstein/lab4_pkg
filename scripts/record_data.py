@@ -63,7 +63,7 @@ class DataRecorder():
             ]
         )
         pkg_dir = '/home/cc/ee106b/sp19/class/ee106b-aap/ee106b_sp19/ros_workspaces/lab4_ws/src/lab4_pkg/'                
-        filename = os.path.join(pkg_dir, 'data/bend_calibration/', run_name)
+        filename = os.path.join(pkg_dir, 'data/system_id/', run_name)
         print 'Writing CSV to {0}'.format(filename)
         df.to_csv(filename)
         self.states = [] # flush states
@@ -73,8 +73,8 @@ class DataRecorder():
         """
         Script to command soft finger.  You can send commands to both fingers, but only the right is attached.
         """
-        num_pwm_vals = 10
-        num_samples = 1
+        num_pwm_vals = 5
+        num_samples = 5
         min_pwm = 5
         max_pwm = 150
         for cmd in np.linspace(min_pwm, max_pwm, num_pwm_vals):
@@ -82,7 +82,7 @@ class DataRecorder():
                 self.cmd_pub.publish(SoftGripperCmd(cmd,cmd))
                 rospy.sleep(10)
                 self.cmd_pub.publish(SoftGripperCmd(0,0))
-                rospy.sleep(3)
+                rospy.sleep(5)
                 self.flush('{0}_{1}.csv'.format(cmd, i))
 
     def shutdown(self):
