@@ -18,7 +18,7 @@ tau = find_tau(u, t, alpha, gamma, tau0, dtau0);
 % Integrate to find q as a function of time
 qhat = find_q(tau, t, K, D, q0, dq0);
 
-error = qhat - q;
+error = qhat - q; % TODO: correct to add norm?
 
 end
 

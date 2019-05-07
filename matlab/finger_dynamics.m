@@ -8,7 +8,7 @@ clc
 syms q dq ddq real
 
 % Parameters
-m = 0.05; % This is made up for now
+m = 0.035; % This is made up for now
 g = [9.81; 0; 0]; % The x axis points down
 L = 0.084; % 8.4 cm
 
@@ -27,7 +27,7 @@ q_adj = q + 0.0001; % move the singularity to -0.0001 instead of zero, but leave
 % We're ignoring external force
 
 % Positions
-G_com = T1*T2*T0_com;
+G_com = T1*T2;
 p_com = G_com(1:3, 4);
 
 G_end = T1*T2*T3*T4*T0_end;
@@ -39,7 +39,7 @@ dp_end = simplify(jacobian(p_end, q)*dq);
 
 % Energy
 KE = 0.5*m*(dp_com'*dp_com);
-PE = m*g'*p_com;
+PE = -m * g' * (p_com - [L/2; 0; 0]);
 
 %% Dynamics
 
@@ -63,7 +63,7 @@ syms C1 C2 real
 
 lambda = q/sin(q);
 sigma = ((lambda^4 - 1)/ lambda^3)*(2*C1 + 4*C2*(lambda - 1/lambda)^2);
-K2 = sigma/lambda;
+K2 = sigma/(lambda-1);
 
 fs2 = [dq; -M\(C + D)*dq - M\(G + K2*q)];
 dynamics2 = fs2 + gs*Tau;

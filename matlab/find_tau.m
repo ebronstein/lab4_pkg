@@ -16,7 +16,8 @@ for index = 2:numel(t)
                                             tau_ode(2), u(index-1), ...
                                             gamma, alpha);
 
-    [~, tau_out] = ode45(tau_ode_dynamics, [t(index-1), t(index)], tau_ode_0);
+    % [~, tau_out] = ode45(tau_ode_dynamics, [t(index-1), t(index)], tau_ode_0);
+    [~, tau_out] = ode23s(tau_ode_dynamics, [t(index-1), t(index)], tau_ode_0);
     
     tau(index) = tau_out(end, 1);
     tau_ode_0 = tau_out(end, :);

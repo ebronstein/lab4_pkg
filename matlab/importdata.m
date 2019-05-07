@@ -22,7 +22,7 @@ end
 
 %% Read columns of data as text:
 % For more information, see the TEXTSCAN documentation.
-formatSpec = '%s%s%s%s%s%s%s%s%s%s%s%[^\n\r]';
+formatSpec = '%s%s%s%s%s%s%s%s%s%s%s%s%s%s%[^\n\r]';
 
 %% Open the text file.
 fileID = fopen(filename,'r');
@@ -51,7 +51,7 @@ for col=1:length(dataArray)-1
 end
 numericData = NaN(size(dataArray{1},1),size(dataArray,2));
 
-for col=[1,2,3,4,5,6,7,8,9,10,11]
+for col=[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
     % Converts text in the input cell array to numbers. Replaced non-numeric
     % text with NaN.
     rawData = dataArray{col};
@@ -98,4 +98,7 @@ data.base_pos_x = cell2mat(raw(:, 8));
 data.base_pos_y = cell2mat(raw(:, 9));
 data.tip_pos_x = cell2mat(raw(:, 10));
 data.tip_pos_y = cell2mat(raw(:, 11));
+data.tip_disp_x = cell2mat(raw(:, 12));
+data.tip_disp_y = cell2mat(raw(:, 13));
+data.bend_angle = cell2mat(raw(:, 14));
 
